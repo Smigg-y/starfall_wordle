@@ -51,7 +51,6 @@ function Wordle:start(ply)
 	self:reset()
 
 	self.answer = table.random(WordleAnswers)
-	print(self.answer)
 	self.answerBytes = { string.byte(self.answer, 1, wordLength) }
 	self.player      = ply
 	self.state       = States.active
