@@ -52,11 +52,11 @@ If you don't want to download all the files you can use this script instead.
 -- EDIT the 'en' part FOR BOTH includes to change the language of the game. You can find more languages here:
 --https://github.com/Smigg-y/starfall_wordle/tree/main#supported-languages
 
---@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/data/ru/choices.lua as answers.lua
---@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/data/ru/valid.lua as guesses.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/data/en/choices.lua as answers.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/data/en/valid.lua as guesses.lua
 
 -- AND THIS
-local Language = "ru"
+local Language = "en"
 
 -- NO TOUCHY
 local WordleUtil = require("sh_wordle.lua", { Language = Language } )
