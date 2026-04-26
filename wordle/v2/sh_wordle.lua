@@ -5,10 +5,10 @@
 -- Supported languages: en (English), es (Spanish), fr (French), it (Italian), nl (Dutch), pt (Portuguese), ru (Russian)
 
 -- EDIT THIS TO YOUR LANGUAGE
---@includedir wordle/data/ru/
+--@includedir wordle/data/en/
 -- ^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- AND THIS
-local Language = "ru"
+local Language = "en"
 -- ^^^^^^^^^^^^^^^^^^
 -- THE SCRIPT WILL ERROR IF THEY ARE NOT THE SAME
 
