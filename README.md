@@ -18,7 +18,7 @@ Everything else is scraped from a multitude of online dictionaries.
 
 ## Changing the Language
 
-Edit the top of `sh_wordle.txt`. You must update **both** the `@includedir` directive and the `Language` variable to the same language code, otherwise the script will error.
+Edit the top of `sh_wordle.lua`. You must update **both** the `@includedir` directive and the `Language` variable to the same language code, otherwise the script will error.
 
 ```lua
 --@name wordle/v2/sh_wordle
