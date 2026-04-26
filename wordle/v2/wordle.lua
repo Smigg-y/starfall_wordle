@@ -6,7 +6,7 @@
 --@include wordle/v2/cl_wordle.lua
 
 if SERVER then
-	require("wordle/v2/sv_wordle.lua")
+    require("wordle/v2/sv_wordle.lua")
 else
-	require("wordle/v2/cl_wordle.lua")
+    require("wordle/v2/cl_wordle.lua")
 end
