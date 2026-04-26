@@ -2,10 +2,7 @@
 --@author Smiggy
 --@shared
 
-local Language = "invalid"
-local function setLanguage(lang)
-    Language = lang
-end
+local Language = (...).Language or "invalid"
 
 local function utf8chars(s)
     local out, i, n = {}, 1, #s
@@ -331,6 +328,4 @@ return {
     NetNames = NetNames,
     Net = Net,
     Bit = Bit,
-
-    setLanguage = setLanguage
 }
