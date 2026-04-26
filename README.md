@@ -40,7 +40,7 @@ local Language = "en"
 
 If you don't want to download all the files you can use this script instead.
 
-```
+```lua
 --@name Wordle
 --@author Smiggy
 --@shared
