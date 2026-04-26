@@ -2,8 +2,8 @@
 --@author Smiggy
 --@client
 
-local WordleUtil = require("sh_wordle.lua")
-local WordleInput = require("cl_input.lua")
+local WordleUtil = ...
+local WordleInput = require("cl_input.lua", WordleUtil)
 
 local KeyW, KeyH, KeyPad = 82, 114, 8
 local WideKeys = { ENTER = 130, BKSP = 130 }

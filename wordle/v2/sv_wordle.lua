@@ -2,11 +2,9 @@
 --@author Smiggy
 --@server
 
---@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/sh_wordle.lua as sh_wordle.lua
-
 if not SERVER then return end
 
-local WordleUtil = require("sh_wordle.lua")
+local WordleUtil = ...
 
 local Config, States, NetNames, ErrorCodes = WordleUtil.Config,
     WordleUtil.States,

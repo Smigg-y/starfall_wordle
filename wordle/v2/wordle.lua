@@ -15,10 +15,11 @@
 -- AND THIS
 local Language = "en"
 
-require("sh_wordle.lua").setLanguage(Language)
+local WordleUtil = require("sh_wordle.lua")
+WordleUtil.setLanguage(Language)
 
 if SERVER then
-    require("sv_wordle.lua")
+    require("sv_wordle.lua", WordleUtil)
 else
-    require("cl_wordle.lua")
+    require("cl_wordle.lua", WordleUtil)
 end
