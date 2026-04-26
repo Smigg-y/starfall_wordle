@@ -2,6 +2,7 @@
 --@author Smiggy
 --@shared
 
+printTable(...)
 local Language = (...).Language or "invalid"
 
 local function utf8chars(s)
