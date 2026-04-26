@@ -449,7 +449,9 @@ hook.add("Render", "wordleui_draw", function()
         ui.inputManager:update("ui")
         render.setRenderTargetTexture("wordleui_rt")
     elseif scr == keyboardScreen then
-        ui.inputManager:update("keyboard")
+        if ui.state == States.active then
+            ui.inputManager:update("keyboard")
+        end
         render.setBackgroundColor(Colors.transparent)
         render.setRenderTargetTexture("wordlekeyboard_rt")
     else
