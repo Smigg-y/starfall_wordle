@@ -1,11 +1,12 @@
 --@name wordle/v2/sv_wordle
 --@author Smiggy
 --@server
---@include wordle/v2/sh_wordle.lua
+
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/sh_wordle.lua as sh_wordle.lua
 
 if not SERVER then return end
 
-local WordleUtil = require("wordle/v2/sh_wordle.lua")
+local WordleUtil = require("sh_wordle.lua")
 
 local Config, States, NetNames, ErrorCodes = WordleUtil.Config,
     WordleUtil.States,
@@ -16,8 +17,8 @@ local wordLength, maxGuesses, autoScreenSetup = Config.wordLength,
     Config.autoScreenSetup
 local Lang, utf8chars = WordleUtil.Lang, WordleUtil.utf8chars
 
-local WordleGuesses = require("wordle/data/" .. Config.language .. "/valid.lua")
-local WordleAnswers = require("wordle/data/" .. Config.language .. "/choices.lua")
+local WordleGuesses = require("guesses.lua")
+local WordleAnswers = require("answers.lua")
 
 ---@class Wordle
 local Wordle = class("wordle")

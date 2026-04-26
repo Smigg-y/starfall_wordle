@@ -2,11 +2,10 @@
 --@author Smiggy
 --@client
 
---@include wordle/v2/sh_wordle.lua
---@include wordle/v2/cl_tile.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_tile.lua as cl_tile.lua
 
-local WordleUtil = require("wordle/v2/sh_wordle.lua")
-local WordleTile = require("wordle/v2/cl_tile.lua")
+local WordleUtil = require("sh_wordle.lua")
+local WordleTile = require("cl_tile.lua")
 
 local Config, Lang, Animations, Fonts = WordleUtil.Config, WordleUtil.Lang, WordleUtil.Animations, WordleUtil.Fonts
 local wordLength, maxGuesses = Config.wordLength, Config.maxGuesses

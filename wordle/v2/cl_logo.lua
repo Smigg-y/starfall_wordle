@@ -2,9 +2,7 @@
 --@author Smiggy
 --@client
 
---@include wordle/v2/sh_wordle.lua
-
-local WordleUtil = require("wordle/v2/sh_wordle.lua")
+local WordleUtil = require("sh_wordle.lua")
 
 local function drawCell(x, y, w, h, r, color, tl, tr, bl, br)
     render.setColor(color)

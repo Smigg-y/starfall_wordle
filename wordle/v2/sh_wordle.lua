@@ -2,15 +2,10 @@
 --@author Smiggy
 --@shared
 
--- Supported languages: en (English), es (Spanish), fr (French), it (Italian), nl (Dutch), pt (Portuguese), ru (Russian)
-
--- EDIT THIS TO YOUR LANGUAGE
---@includedir wordle/data/en/
--- ^^^^^^^^^^^^^^^^^^^^^^^^^^
--- AND THIS
-local Language = "en"
--- ^^^^^^^^^^^^^^^^^^
--- THE SCRIPT WILL ERROR IF THEY ARE NOT THE SAME
+local Language = "invalid"
+local function setLanguage(lang)
+    Language = lang
+end
 
 local function utf8chars(s)
     local out, i, n = {}, 1, #s
@@ -335,5 +330,7 @@ return {
     ErrorMessages = ErrorMessages,
     NetNames = NetNames,
     Net = Net,
-    Bit = Bit
+    Bit = Bit,
+
+    setLanguage = setLanguage
 }

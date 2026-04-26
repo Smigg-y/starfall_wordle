@@ -2,9 +2,7 @@
 --@author Smiggy
 --@client
 
---@include wordle/v2/sh_wordle.lua
-
-local WordleUtil = require("wordle/v2/sh_wordle.lua")
+local WordleUtil = require("sh_wordle.lua")
 local Sounds = WordleUtil.Sounds
 
 ---@class WordleTile

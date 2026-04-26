@@ -2,17 +2,16 @@
 --@author Smiggy
 --@client
 
---@include wordle/v2/sh_wordle.lua
---@include wordle/v2/cl_input.lua
---@include wordle/v2/cl_logo.lua
---@include wordle/v2/cl_grid.lua
---@include wordle/v2/cl_keyboard.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_input.lua as cl_input.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_logo.lua as cl_logo.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_grid.lua as cl_grid.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_keyboard.lua as cl_keyboard.lua
 
-local WordleUtil = require("wordle/v2/sh_wordle.lua")
-local WordleInput = require("wordle/v2/cl_input.lua")
-local WordleLogo = require("wordle/v2/cl_logo.lua")
-local WordleGrid = require("wordle/v2/cl_grid.lua")
-local WordleKeyboard = require("wordle/v2/cl_keyboard.lua")
+local WordleUtil = require("sh_wordle.lua")
+local WordleInput = require("cl_input.lua")
+local WordleLogo = require("cl_logo.lua")
+local WordleGrid = require("cl_grid.lua")
+local WordleKeyboard = require("cl_keyboard.lua")
 
 local Config, States, Animations, NetNames, Colors, Fonts, Materials, Sounds =
     WordleUtil.Config,
