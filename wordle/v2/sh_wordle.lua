@@ -15,7 +15,7 @@ local function utf8chars(s)
     return out
 end
 
-local function makeProfile(alphabet, keyboard)
+local function makeProfile(alphabet, keyboard, localization)
     local toIndex = {}
     for i, ch in ipairs(alphabet) do toIndex[ch] = i - 1 end
     local bits = math.max(1, math.ceil(math.log(#alphabet) / math.log(2)))
@@ -24,18 +24,29 @@ local function makeProfile(alphabet, keyboard)
         charToIndex = toIndex,
         bitsPerChar = bits,
         charsPerChunk = math.floor(30 / bits),
-        keyboard = keyboard
+        keyboard = keyboard,
+        localization = localization
     }
 end
 
 local Languages = {
-    en = makeProfile({
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-    }, {
-        { "Q",     "W", "E", "R", "T", "Y", "U", "I", "O",   "P" },
-        { "A",     "S", "D", "F", "G", "H", "J", "K", "L" },
-        { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
+    en = makeProfile(enAlphabet, enKeyboard, {
+        word_was     = "THE WORD WAS - %s",
+        play         = "PLAY",
+        chances      = "GET %d CHANCES TO GUESS",
+        letter_word  = "A %d LETTER WORD",
+        is_playing   = "%s is playing",
+        won          = "YOU WON!",
+        lost         = "YOU LOST",
+        solved_in    = "Solved in %d/%d",
+        win_messages = {
+            "GENIUS!",
+            "MAGNIFICENT",
+            "IMPRESSIVE",
+            "SPLENDID",
+            "GREAT",
+            "PHEW",
+        },
     }),
     es = makeProfile({
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
@@ -44,38 +55,100 @@ local Languages = {
         { "Q",     "W", "E", "R", "T", "Y", "U", "I", "O",   "P" },
         { "A",     "S", "D", "F", "G", "H", "J", "K", "L",   "Ñ" },
         { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
-    }),
-    fr = makeProfile({
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
     }, {
+        word_was     = "LA PALABRA ERA - %s",
+        play         = "JUGAR",
+        chances      = "CONSIGUE %d INTENTOS PARA ADIVINAR",
+        letter_word  = "UNA PALABRA DE %d LETRAS",
+        is_playing   = "%s está jugando",
+        won          = "¡GANASTE!",
+        lost         = "PERDISTE",
+        solved_in    = "Resuelto en %d/%d",
+        win_messages = {
+            "¡GENIO!",
+            "MAGNÍFICO",
+            "IMPRESIONANTE",
+            "ESPLÉNDIDO",
+            "GENIAL",
+            "¡UF!",
+        },
+    }),
+    fr = makeProfile(enAlphabet, {
         { "A",     "Z", "E", "R", "T", "Y", "U", "I",   "O", "P" },
         { "Q",     "S", "D", "F", "G", "H", "J", "K",   "L", "M" },
         { "ENTER", "W", "X", "C", "V", "B", "N", "BKSP" }
-    }),
-    it = makeProfile({
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
     }, {
-        { "Q",     "W", "E", "R", "T", "Y", "U", "I", "O",   "P" },
-        { "A",     "S", "D", "F", "G", "H", "J", "K", "L" },
-        { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
+        word_was     = "LE MOT ÉTAIT - %s",
+        play         = "JOUER",
+        chances      = "%d ESSAIS POUR DEVINER",
+        letter_word  = "UN MOT DE %d LETTRES",
+        is_playing   = "%s joue",
+        won          = "VOUS AVEZ GAGNÉ !",
+        lost         = "VOUS AVEZ PERDU",
+        solved_in    = "Résolu en %d/%d",
+        win_messages = {
+            "GÉNIE !",
+            "MAGNIFIQUE",
+            "IMPRESSIONNANT",
+            "SUPERBE",
+            "BRAVO",
+            "OUF !",
+        },
     }),
-    nl = makeProfile({
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-    }, {
-        { "Q",     "W", "E", "R", "T", "Y", "U", "I", "O",   "P" },
-        { "A",     "S", "D", "F", "G", "H", "J", "K", "L" },
-        { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
+    it = makeProfile(enAlphabet, enKeyboard, {
+        word_was     = "LA PAROLA ERA - %s",
+        play         = "GIOCA",
+        chances      = "OTTIENI %d TENTATIVI PER INDOVINARE",
+        letter_word  = "UNA PAROLA DI %d LETTERE",
+        is_playing   = "%s sta giocando",
+        won          = "HAI VINTO!",
+        lost         = "HAI PERSO",
+        solved_in    = "Risolto in %d/%d",
+        win_messages = {
+            "GENIO!",
+            "MAGNIFICO",
+            "IMPRESSIONANTE",
+            "SPLENDIDO",
+            "BRAVO",
+            "PER UN PELO!",
+        },
     }),
-    pt = makeProfile({
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-    }, {
-        { "Q",     "W", "E", "R", "T", "Y", "U", "I", "O",   "P" },
-        { "A",     "S", "D", "F", "G", "H", "J", "K", "L" },
-        { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
+    nl = makeProfile(enAlphabet, enKeyboard, {
+        word_was     = "HET WOORD WAS - %s",
+        play         = "SPELEN",
+        chances      = "KRIJG %d KANSEN OM TE RADEN",
+        letter_word  = "EEN WOORD VAN %d LETTERS",
+        is_playing   = "%s speelt",
+        won          = "GEWONNEN!",
+        lost         = "VERLOREN",
+        solved_in    = "Opgelost in %d/%d",
+        win_messages = {
+            "GENIAAL!",
+            "SCHITTEREND",
+            "INDRUKWEKKEND",
+            "PRACHTIG",
+            "GOED",
+            "PFOEW!",
+        },
+    }),
+    pt = makeProfile(enAlphabet, enKeyboard, {
+        title        = "WORDLE",
+        word_was     = "A PALAVRA ERA - %s",
+        play         = "JOGAR",
+        chances      = "%d TENTATIVAS PARA ADIVINHAR",
+        letter_word  = "UMA PALAVRA DE %d LETRAS",
+        is_playing   = "%s está a jogar",
+        won          = "GANHASTE!",
+        lost         = "PERDESTE",
+        solved_in    = "Resolvido em %d/%d",
+        win_messages = {
+            "GÉNIO!",
+            "MAGNÍFICO",
+            "IMPRESSIONANTE",
+            "ESPLÊNDIDO",
+            "ÓTIMO",
+            "UFA!",
+        },
     }),
     ru = makeProfile({
         "А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "Й", "К", "Л",
@@ -85,6 +158,23 @@ local Languages = {
         { "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ" },
         { "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э" },
         { "ENTER", "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", "BKSP" }
+    }, {
+        word_was     = "ЗАГАДАННОЕ СЛОВО - %s",
+        play         = "ИГРАТЬ",
+        chances      = "%d ПОПЫТОК ДЛЯ УГАДЫВАНИЯ",
+        letter_word  = "СЛОВО ИЗ %d БУКВ",
+        is_playing   = "%s играет",
+        won          = "ВЫ ВЫИГРАЛИ!",
+        lost         = "ВЫ ПРОИГРАЛИ",
+        solved_in    = "Решено за %d/%d",
+        win_messages = {
+            "ГЕНИАЛЬНО!",
+            "ВЕЛИКОЛЕПНО",
+            "ВПЕЧАТЛЯЮЩЕ",
+            "ПРЕВОСХОДНО",
+            "ОТЛИЧНО",
+            "ФУХ!",
+        },
     })
 }
 
@@ -164,8 +254,10 @@ local Anchors = {
 
 local Fonts = SERVER and {} or {
     title = render.createFont("Roboto Mono", 128, 1000, true),
+    titleMedium = render.createFont("Roboto Mono", 100, 1000, true),
     subtitle = render.createFont("Roboto Mono", 64, 1000, true),
     subtitleSmall = render.createFont("Roboto Mono", 48, 1000, true),
+    subtitleMedium = render.createFont("Roboto Mono", 56, 1000, true),
     small = render.createFont("Roboto Mono", 32, 400, true)
 }
 
@@ -204,17 +296,12 @@ local Colors = {
 }
 
 local Materials = SERVER and {} or {
-    HomeButton = render.createMaterial("gui/html/home", function(_, _, _, _,
-                                                                 layout)
+    HomeButton = render.createMaterial("gui/html/home", function(_, _, _, _, layout)
         layout(0, 0, 1024, 1024)
-    end) or nil
+    end)
 }
 
 local FeedbackStates = { [0] = "absent", [1] = "present", [2] = "correct" }
-
-local WinMessages = {
-    "GENIUS!", "MAGNIFICENT", "IMPRESSIVE", "SPLENDID", "GREAT", "PHEW"
-}
 
 local States = { waiting = 1, active = 2, won = 3, lost = 4 }
 
@@ -320,7 +407,6 @@ return {
     Colors = Colors,
     Sounds = Sounds,
     Materials = Materials,
-    WinMessages = WinMessages,
     FeedbackStates = FeedbackStates,
     States = States,
     ErrorCodes = ErrorCodes,
