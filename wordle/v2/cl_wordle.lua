@@ -24,6 +24,7 @@ local Config, States, Animations, NetNames, Colors, Fonts, Materials, Sounds =
     WordleUtil.Sounds
 local wordLength, maxGuesses, ScrW, ScrH = Config.wordLength, Config.maxGuesses, Config.ScrW, Config.ScrH
 local Lang = WordleUtil.Lang
+local l10n = Lang.localization
 
 local nextFrame = 0
 local FPSDelta = 1 / Config.FPS
@@ -174,12 +175,12 @@ function WordleUI:onGuessResult(feedback, state, answer)
             local isLocalPlayer = player() == self.player
 
             if state == States.won then
-                self.endMessage = WordleUtil.WinMessages[self.guesses]
+                self.endMessage = l10n.win_messages[self.guesses]
                 if isLocalPlayer then
                     Sounds.PlaySound(Sounds.win)
                 end
             elseif state == States.lost then
-                self.endMessage = "THE WORD WAS - " .. string.upper(answer or "?")
+                self.endMessage = l10n.word_was:format(answer or "?")
                 if isLocalPlayer then
                     Sounds.PlaySound(Sounds.lose)
                 end
@@ -240,16 +241,21 @@ function WordleUI:initializeInputs()
     self.inputManager:register("ui", self.playButton)
 end
 
-render.setFont(Fonts.subtitle)
+render.setFont(Fonts.subtitleMedium)
 local _, subtitleH = render.getTextSize("A")
 
+render.setFont(Fonts.titleMedium)
+local _, titleH = render.getTextSize("A")
+
+local playTxt = l10n.play
 local function drawPlayButton(bounds, hovered)
     render.setColor(hovered and Colors.lightGrey or Colors.white)
     render.drawRoundedBox(64, bounds.x, bounds.y, bounds.w, bounds.h)
 
     render.setColor(Colors.darkGrey)
-    render.setFont(Fonts.title)
-    render.drawText(bounds.x + (bounds.w / 2), bounds.y, "PLAY", TEXT_ALIGN.CENTER)
+    render.setFont(Fonts.titleMedium)
+    render.drawText(bounds.x + bounds.w / 2, bounds.y + bounds.h / 2 - titleH / 2, playTxt,
+        TEXT_ALIGN.CENTER)
 end
 
 local function drawHomeButton(bounds, hovered)
@@ -262,8 +268,8 @@ local function drawHomeButton(bounds, hovered)
     render.drawTexturedRect(bounds.x, bounds.y, bounds.w, bounds.h)
 end
 
-local subtextOne = "GET " .. maxGuesses .. " CHANCES TO GUESS"
-local subtextTwo = "A " .. wordLength .. " LETTER WORD"
+local subtextOne = l10n.chances:format(maxGuesses)
+local subtextTwo = l10n.letter_word:format(wordLength)
 
 function WordleUI:drawHomeScreen()
     WordleLogo(self.layout.wordleLogo)
@@ -271,7 +277,7 @@ function WordleUI:drawHomeScreen()
 
     local bounds = self.layout.subtitle
     render.setColor(Colors.white)
-    render.setFont(Fonts.subtitle)
+    render.setFont(Fonts.subtitleMedium)
     render.drawText(bounds.x, bounds.y - subtitleH / 2, subtextOne, TEXT_ALIGN.CENTER)
     render.drawText(bounds.x, bounds.y + subtitleH / 2, subtextTwo, TEXT_ALIGN.CENTER)
 end
@@ -290,7 +296,7 @@ function WordleUI:drawPlayScreen(now)
     local bounds = self.layout.activePlayer
     render.setColor(Colors.white)
     render.setFont(Fonts.small)
-    render.drawText(bounds.x + 48, bounds.y - 16, self.player:getName() .. " is playing", TEXT_ALIGN.LEFT)
+    render.drawText(bounds.x + 48, bounds.y - 16, l10n.is_playing:format(self.player:getName()), TEXT_ALIGN.LEFT)
 end
 
 function WordleUI:drawResultScreen()
@@ -299,19 +305,19 @@ function WordleUI:drawResultScreen()
 
     local didWin = self.state == States.won
     local col = didWin and Colors.green or Colors.yellow
-    local resultText = didWin and "YOU WON!" or "YOU LOST"
+    local resultText = didWin and l10n.won or l10n.lost
 
     local bounds = self.layout.resultText
     render.setColor(col)
-    render.setFont(Fonts.title)
+    render.setFont(Fonts.titleMedium)
     render.drawText(bounds.x, bounds.y, resultText, TEXT_ALIGN.CENTER)
 
     render.setColor(Colors.white)
+    render.setFont(Fonts.subtitle)
     render.drawText(bounds.x, bounds.y + 96, self.endMessage or "", TEXT_ALIGN.CENTER)
 
     if didWin then
-        render.setFont(Fonts.subtitle)
-        render.drawText(bounds.x, bounds.y + 256, "Solved in " .. self.guesses .. "/" .. maxGuesses, TEXT_ALIGN.CENTER)
+        render.drawText(bounds.x, bounds.y + 256, l10n.solved_in:format(self.guesses, maxGuesses), TEXT_ALIGN.CENTER)
     end
 end
 
