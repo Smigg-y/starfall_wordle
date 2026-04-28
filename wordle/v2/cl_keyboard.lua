@@ -146,6 +146,8 @@ function WordleKeyboard:buildLayout(layout)
 
     self.keyboardHeight = ((KeyH + KeyPad) * #layout)
     self.keyboardWidth = (widest * scale) + KeyPad
+    self.keyboardBgX = ScrW / 2 - self.keyboardWidth / 2 - (KeyPad / 2)
+    self.keyboardBgY = self.y - (KeyPad / 2)
 
     for rowI, row in ipairs(layout) do
         local x = math.floor((self.w - rowWidth(row)) / 2) - (KeyPad / 2)
@@ -176,14 +178,6 @@ function WordleKeyboard:buildLayout(layout)
     self.dirty = true
 end
 
-function WordleKeyboard:getHeight()
-    return self.keyboardHeight or 0
-end
-
-function WordleKeyboard:getWidth()
-    return self.keyboardWidth or 0
-end
-
 function WordleKeyboard:applyFeedback(guess, feedback)
     local chars = WordleUtil.utf8chars(guess)
     for i = 1, #chars do
@@ -209,8 +203,7 @@ end
 
 function WordleKeyboard:draw()
     render.setColor(Colors.darkGrey)
-    render.drawRoundedBox(8, ScrW / 2 - self:getWidth() / 2 - (KeyPad / 2), self.y - (KeyPad / 2), self:getWidth(),
-        self:getHeight())
+    render.drawRoundedBox(8, self.keyboardBgX, self.keyboardBgY, self.keyboardWidth, self.keyboardHeight)
 
     for _, key in ipairs(self.keys) do
         key:drawBackground()
