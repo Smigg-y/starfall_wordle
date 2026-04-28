@@ -4,6 +4,16 @@
 
 local Language = (...).Language or "invalid"
 
+local Config = {
+    autoScreenSetup = true, -- should we automatically spawn, place and setup screens?
+    language = Language,
+
+    wordLength = 5,
+    maxGuesses = 6,
+    ScrW = 1024,
+    ScrH = 1024,
+    FPS = 60
+}
 local function utf8chars(s)
     local out, i, n = {}, 1, #s
     while i <= n do
@@ -25,7 +35,7 @@ local function makeProfile(alphabet, keyboard, localization)
         bitsPerChar = bits,
         charsPerChunk = math.floor(30 / bits),
         keyboard = keyboard,
-        localization = localization
+        localization = localization,
     }
 end
 
@@ -187,17 +197,6 @@ local Languages = {
             "ФУХ!",
         },
     })
-}
-
-local Config = {
-    autoScreenSetup = true, -- should we automatically spawn, place and setup screens?
-    language = Language,
-
-    wordLength = 5,
-    maxGuesses = 6,
-    ScrW = 1024,
-    ScrH = 1024,
-    FPS = 60
 }
 
 local Lang = Languages[Config.language]
@@ -424,5 +423,5 @@ return {
     ErrorMessages = ErrorMessages,
     NetNames = NetNames,
     Net = Net,
-    Bit = Bit,
+    Bit = Bit
 }
