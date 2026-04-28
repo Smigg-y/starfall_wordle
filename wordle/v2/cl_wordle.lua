@@ -435,6 +435,7 @@ hook.add("RenderOffscreen", "wordleui_render", function()
 end)
 
 local mainScreen, keyboardScreen
+local mainRatio, keyboardRatio
 hook.add("ComponentLinked", "wordleui_screen_setup", function(ent)
     if not ent or ent:getClass() ~= "starfall_screen" then
         return
@@ -442,8 +443,14 @@ hook.add("ComponentLinked", "wordleui_screen_setup", function(ent)
 
     if not mainScreen then
         mainScreen = ent
+        mainRatio = render.getScreenInfo(mainScreen).RatioX
     else
         keyboardScreen = ent
+        keyboardRatio = render.getScreenInfo(keyboardScreen).RatioX
+        if mainRatio ~= keyboardRatio then
+            print("Warning: Wordle UI screens have different aspect ratios. Cursor will be misaligned.")
+        end
+        ui.inputManager:setCursorScale(mainRatio and mainRatio or keyboardRatio)
         hook.remove("ComponentLinked", "wordleui_screen_setup")
     end
 end)

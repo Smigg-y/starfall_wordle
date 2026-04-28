@@ -40,6 +40,8 @@ function InputManager:initialize()
     self.owner = nil
     self.hovered = nil
     self.keyHeld = false
+    self.cursorScaleX = 1
+    self.cursorScaleY = 1
 end
 
 function InputManager:register(group, clickable)
@@ -80,9 +82,14 @@ local function findHovered(group, cx, cy)
     end
 end
 
--- 512x512 = default screen resolution
-local CursorScaleX = WordleUtil.Config.ScrW / 512
-local CursorScaleY = WordleUtil.Config.ScrH / 512
+function InputManager:setCursorScale(ratio)
+    if not ratio or ratio <= 0 then
+        ratio = 1
+    end
+
+    self.cursorScaleX = WordleUtil.Config.ScrW / 512 * ratio
+    self.cursorScaleY = WordleUtil.Config.ScrH / 512
+end
 
 function InputManager:update(activeGroup)
     local keyDown = input.isKeyDown(KEY.E)
@@ -102,7 +109,7 @@ function InputManager:update(activeGroup)
     if not cx then
         return
     end
-    cx, cy = cx * CursorScaleX, cy * CursorScaleY
+    cx, cy = cx * self.cursorScaleX, cy * self.cursorScaleY
 
     local hovered
     if activeGroup then
