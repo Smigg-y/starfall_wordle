@@ -26,11 +26,12 @@ local tileColors = {
     correct = Colors.tileCorrect,
 }
 
-function WordleTile:initialize(letter, x, y, w, h)
-    self.x, self.y, self.w, self.h = x, y, w, h
-    self.cx, self.cy = x + w / 2, y + h / 2
+function WordleTile:initialize(x, y, grid)
+    self.x, self.y, self.w, self.h = x, y, grid.tileW, grid.tileH
+    self.cx, self.cy = x + self.w / 2, y + self.h / 2
     self:reset()
-    self.letter = letter
+    self._inActive = false
+    self.grid = grid
 end
 
 local function refreshColor(tile)
@@ -50,32 +51,34 @@ function WordleTile:reset()
     self.bounceY = 0
     self.bounceStart = nil
     self.animating = false
+    self._inActive = false
     refreshColor(self)
 end
 
-function WordleTile:startFlip(rawState, col)
+function WordleTile:startFlip(rawState, col, startAt)
     self.pendingState = FeedbackStates[rawState]
-    self.flipStart = timer.systime()
+    self.flipStart = startAt or timer.systime()
+    self.flipCol = col
+    self.flipSoundFired = false
     self.animating = true
-    Sounds.PlaySound(Sounds.tileFlip, 90 + col * 4)
+    self.grid:_addActive(self)
 end
 
 function WordleTile:startPop()
     self.popScale = 1
     self.popStart = timer.systime()
     self.animating = true
+    self.grid:_addActive(self)
 end
 
 function WordleTile:startBounce(startAt, col)
     startAt = startAt or timer.systime()
     self.bounceY = 0
     self.bounceStart = startAt
+    self.bounceCol = col
+    self.bounceSoundFired = false
     self.animating = true
-
-    local when = math.max(0, startAt - timer.systime())
-    timer.simple(when, function()
-        Sounds.PlaySound(Sounds.rowWin, 90 + col * 4)
-    end)
+    self.grid:_addActive(self)
 end
 
 function WordleTile:setLetter(char)
@@ -99,22 +102,30 @@ function WordleTile:update(now)
     local stillBusy = false
 
     if self.flipStart then
-        local t = (now - self.flipStart) * invFlipDuration
-        if t >= 1 then
-            self.state = self.pendingState
-            self.pendingState = nil
-            self.displayState = nil
-            self.flipStart = nil
-            refreshColor(self)
-        else
-            self.flipScaleY = math.abs(math.cos(t * math.pi))
-
-            local newDisplayState = t >= 0.5 and self.pendingState or "empty"
-            if newDisplayState ~= self.displayState then
-                self.displayState = newDisplayState
-                refreshColor(self)
-            end
+        if now < self.flipStart then
             stillBusy = true
+        else
+            if not self.flipSoundFired then
+                self.flipSoundFired = true
+                Sounds.PlaySound(Sounds.tileFlip, 90 + self.flipCol * 4)
+            end
+            local t = (now - self.flipStart) * invFlipDuration
+            if t >= 1 then
+                self.state = self.pendingState
+                self.pendingState = nil
+                self.displayState = nil
+                self.flipStart = nil
+                refreshColor(self)
+            else
+                self.flipScaleY = math.abs(math.cos(t * math.pi))
+
+                local newDisplayState = t >= 0.5 and self.pendingState or "empty"
+                if newDisplayState ~= self.displayState then
+                    self.displayState = newDisplayState
+                    refreshColor(self)
+                end
+                stillBusy = true
+            end
         end
     end
 
@@ -133,6 +144,10 @@ function WordleTile:update(now)
         if now < self.bounceStart then
             stillBusy = true
         else
+            if not self.bounceSoundFired then
+                self.bounceSoundFired = true
+                Sounds.PlaySound(Sounds.rowWin, 90 + self.bounceCol * 4)
+            end
             local bt = (now - self.bounceStart) * invBounceDuration
             if bt >= 1 then
                 self.bounceY = 0
