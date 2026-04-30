@@ -24,7 +24,6 @@ function WordleKey:initialize(letter, bounds, wide, keyboard)
     self.state = "default"
     self.stateColor = nil
     self.pressed = false
-    self.font = wide and Fonts.subtitleSmall or Fonts.subtitle
     self.fontOffset = wide and 24 or 32
 end
 
@@ -84,19 +83,18 @@ end
 ---@class WordleKeyboard
 local WordleKeyboard = class("wordlekeyboard")
 
-function WordleKeyboard:initialize(layout, inputManager, onKeyPressed, w, y)
+function WordleKeyboard:initialize(layout, inputManager, onKeyPressed)
     self.w = w or ScrW
     self.y = y or ScrH / 2
 
     self.inputManager = inputManager
     self.onKeyPressed = onKeyPressed
 
-    self.keys = {}
     self.narrowKeys = {}
     self.wideKeys = {}
     self.keysByLabel = {}
 
-    self.dirty = true
+    self:markDirty()
 
     self:buildLayout(layout)
 end
@@ -145,7 +143,7 @@ function WordleKeyboard:buildLayout(layout)
     self.keyboardWidth = (widest * scale) + KeyPad
     self.keyboardBgX = ScrW / 2 - self.keyboardWidth / 2 - (KeyPad / 2)
     self.keyboardBgY = self.y - (KeyPad / 2)
-    
+
     for rowI, row in ipairs(layout) do
         local x = math.floor((self.w - rowWidth(row)) / 2) - (KeyPad / 2)
         local y = math.floor(self.y + (rowI - 1) * (KeyH + KeyPad))
@@ -172,7 +170,7 @@ function WordleKeyboard:buildLayout(layout)
         end
     end
 
-    self.dirty = true
+    self:markDirty()
 end
 
 function WordleKeyboard:applyFeedback(guess, feedback)
@@ -185,7 +183,7 @@ function WordleKeyboard:applyFeedback(guess, feedback)
             key:setState(newState)
         end
     end
-    self.dirty = true
+    self:markDirty()
 end
 
 function WordleKeyboard:reset()
@@ -195,7 +193,7 @@ function WordleKeyboard:reset()
         key.pressed = false
         key.stateColor = nil
     end
-    self.dirty = true
+    self:markDirty()
 end
 
 function WordleKeyboard:draw()
