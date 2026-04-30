@@ -153,7 +153,6 @@ local Languages = {
         },
     }),
     pt = makeProfile(enAlphabet, enKeyboard, {
-        title        = "WORDLE",
         word_was     = "A PALAVRA ERA - %s",
         play         = "JOGAR",
         chances      = "%d TENTATIVAS PARA ADIVINHAR",
@@ -235,7 +234,7 @@ end
 
 local Layout = {
     -- main screen
-    wordleLogo = { anchor = "top", offsetY = 32, w = 256, h = 256 },
+    wordleLogo = { anchor = "top", offsetY = 32, w = 384, h = 384 },
     subtitle = { anchor = "center", offsetY = -16 },
 
     -- main screen and result screen
@@ -263,6 +262,7 @@ local Anchors = {
 }
 
 local Fonts = SERVER and {} or {
+    titleLarge = render.createFont("Roboto Mono", 256, 1000, true),
     title = render.createFont("Roboto Mono", 128, 1000, true),
     titleMedium = render.createFont("Roboto Mono", 100, 1000, true),
     subtitle = render.createFont("Roboto Mono", 64, 1000, true),
