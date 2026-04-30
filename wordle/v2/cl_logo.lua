@@ -4,28 +4,35 @@
 
 local WordleUtil = ...
 
+local rtName = "wordlelogo_rt"
+render.createRenderTarget(rtName)
+
+local W, Y, G, B = WordleUtil.Colors.white, WordleUtil.Colors.yellow, WordleUtil.Colors.green, WordleUtil.Colors.black
+local Font = WordleUtil.Fonts.titleLarge
 local function drawCell(x, y, w, h, r, color, tl, tr, bl, br)
     render.setColor(color)
     render.drawRoundedBoxEx(r, x, y, w, h, tl, tr, bl, br)
 end
 
-local W, Y, G, B = WordleUtil.Colors.white, WordleUtil.Colors.yellow, WordleUtil.Colors.green, WordleUtil.Colors.black
-local Font = WordleUtil.Fonts.title
+render.setFont(Font)
+local _, titleH = render.getTextSize("WORDLE")
 
-return function(bounds, pad, r)
-    local w = bounds.w or 128
-    local h = bounds.h or 128
-    pad = pad or 6
-    r = r or 8
+local function renderWordleLogo()
+    local w, h = 768, 768
+    local pad, r = 14, 18
 
     local bw = (w - 4 * pad) / 3
     local bh = (h - 4 * pad) / 3
 
-    local x, y = bounds.x, bounds.y
+    local sw, sh = render.getResolution()
+    local x = (sw - w) / 2
+    local y = (sh - h - titleH) / 2
 
+    -- column positions
     local lx = x + pad
     local cx = lx + bw + pad
     local rx = cx + bw + pad
+    -- row positions
     local ty = y + pad
     local my = ty + bh + pad
     local by = my + bh + pad
@@ -47,5 +54,18 @@ return function(bounds, pad, r)
 
     render.setColor(W)
     render.setFont(Font)
-    render.drawText(x + (w / 2), y + h - pad, "WORDLE", TEXT_ALIGN.CENTER)
+    render.drawText(x + (w / 2), y + h, "WORDLE", TEXT_ALIGN.CENTER)
+end
+
+return function()
+    hook.add("RenderOffscreen", "renderWordleLogo", function()
+        render.selectRenderTarget(rtName)
+        render.clear(Color(0, 0, 0, 0))
+        renderWordleLogo()
+        render.selectRenderTarget()
+
+        hook.remove("RenderOffscreen", "renderWordleLogo")
+    end)
+
+    return rtName
 end
