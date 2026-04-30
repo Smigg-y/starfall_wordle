@@ -84,8 +84,8 @@ end
 local WordleKeyboard = class("wordlekeyboard")
 
 function WordleKeyboard:initialize(layout, inputManager, onKeyPressed)
-    self.w = w or ScrW
-    self.y = y or ScrH / 2
+    self.w = ScrW
+    self.y = ScrH / 2
 
     self.inputManager = inputManager
     self.onKeyPressed = onKeyPressed
