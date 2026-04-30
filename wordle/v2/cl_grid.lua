@@ -13,7 +13,7 @@ local wordLength, maxGuesses = Config.wordLength, Config.maxGuesses
 ---@class WordleGrid
 local WordleGrid = class("wordle_grid")
 
-function WordleGrid:initialize(x, y, tileW, tileH, pad)
+function WordleGrid:initialize(ui, x, y, tileW, tileH, pad)
     self.tiles = {}
     self.tileW = tileW or 100
     self.tileH = tileH or 100
@@ -28,8 +28,8 @@ function WordleGrid:initialize(x, y, tileW, tileH, pad)
     self.shakeStart = nil
     self.shakeOffset = nil
 
-    self._generation = 0
-    self._anyAnimating = false
+    self.ui = ui
+    self._activeTiles = {}
 
     local gridW = wordLength * (self.tileW + self.pad) - self.pad
     local gridH = maxGuesses * (self.tileH + self.pad) - self.pad
@@ -40,14 +40,12 @@ function WordleGrid:initialize(x, y, tileW, tileH, pad)
         for col = 1, wordLength do
             local tx = ogx + (col - 1) * (self.tileW + self.pad)
             local ty = ogy + (row - 1) * (self.tileH + self.pad)
-            self.tiles[row][col] = WordleTile:new("", tx, ty, self.tileW, self.tileH)
+            self.tiles[row][col] = WordleTile:new(tx, ty, self)
         end
     end
 end
 
 function WordleGrid:reset()
-    self._generation = self._generation + 1
-
     for _, row in ipairs(self.tiles) do
         for _, tile in ipairs(row) do
             tile:reset()
@@ -60,22 +58,26 @@ function WordleGrid:reset()
     self.shakingRow = nil
     self.shakeStart = nil
     self.shakeOffset = nil
-    self._anyAnimating = false
+    self._activeTiles = {}
 end
 
-function WordleGrid:shakeRow(row)
-    self.shakingRow = row or self.currentRow
+function WordleGrid:_addActive(tile)
+    if tile._inActive then return end
+    tile._inActive = true
+    self._activeTiles[#self._activeTiles + 1] = tile
+end
+
+function WordleGrid:shakeRow()
+    self.shakingRow = self.currentRow
     self.shakeStart = timer.systime()
 end
 
-function WordleGrid:bounceRow(row)
-    row = row or self.currentRow - 1
-    local tiles = self.tiles[row]
+function WordleGrid:bounceRow()
+    local tiles = self.tiles[self.currentRow - 1]
     if not tiles then
         return
     end
 
-    self._anyAnimating = true
     local now = timer.systime()
     for i, tile in ipairs(tiles) do
         tile:startBounce(now + (i - 1) * Animations.bounceDelay, i)
@@ -101,7 +103,6 @@ function WordleGrid:typeKey(char)
 
     if not char or not Lang.charToIndex[char] then return end
 
-    self._anyAnimating = true
     self:getCurrentTile():setLetter(char)
     self.currentCol = self.currentCol + 1
 end
@@ -127,27 +128,17 @@ function WordleGrid:applyFeedback(guess, feedback, keepLocked, onComplete)
     if #guessChars ~= wordLength then return end
 
     self.locked = true
-    self._anyAnimating = true
 
     local row = self.tiles[self.currentRow]
-    local gen = self._generation
 
+    local now = timer.systime()
     for i = 1, wordLength do
         row[i].letter = guessChars[i]
-        timer.simple((i - 1) * Animations.flipDelay, function()
-            if self._generation ~= gen then
-                return
-            end
-            self._anyAnimating = true
-            row[i]:startFlip(feedback[i], i)
-        end)
+        row[i]:startFlip(feedback[i], i, now + (i - 1) * Animations.flipDelay)
     end
 
     local seqEnd = (wordLength - 1) * Animations.flipDelay + Animations.flipDuration
-    timer.simple(seqEnd, function()
-        if self._generation ~= gen then
-            return
-        end
+    self.ui:schedule(seqEnd, function()
         self.currentRow = self.currentRow + 1
         self.currentCol = 1
         if not keepLocked then
@@ -160,19 +151,15 @@ function WordleGrid:applyFeedback(guess, feedback, keepLocked, onComplete)
 end
 
 function WordleGrid:update(now)
-    if self._anyAnimating then
-        local stillAnimating = false
-        for _, row in ipairs(self.tiles) do
-            for _, tile in ipairs(row) do
-                if tile.animating then
-                    tile:update(now)
-                    if tile.animating then
-                        stillAnimating = true
-                    end
-                end
-            end
+    local active = self._activeTiles
+    for i = #active, 1, -1 do
+        local tile = active[i]
+        tile:update(now)
+        if not tile.animating then
+            tile._inActive = false
+            active[i] = active[#active]
+            active[#active] = nil
         end
-        self._anyAnimating = stillAnimating
     end
 
     if self.shakeStart and self.shakingRow then
