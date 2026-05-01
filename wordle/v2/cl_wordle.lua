@@ -6,12 +6,14 @@
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_logo.lua as cl_logo.lua
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_grid.lua as cl_grid.lua
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_keyboard.lua as cl_keyboard.lua
+--@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_background.lua as cl_background.lua
 
 local WordleUtil = ...
 local WordleInput = require("cl_input.lua", WordleUtil)
 local WordleLogo = require("cl_logo.lua", WordleUtil)
 local WordleGrid = require("cl_grid.lua", WordleUtil)
 local WordleKeyboard = require("cl_keyboard.lua", WordleUtil)
+local WordleBackground = require("cl_background.lua", WordleUtil)
 
 local Config, States, Animations, NetNames, Colors, Fonts, Materials, Sounds =
     WordleUtil.Config,
