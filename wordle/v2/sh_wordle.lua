@@ -5,10 +5,10 @@
 -- Supported languages: en (English), es (Spanish), fr (French), it (Italian), nl (Dutch), pt (Portuguese), ru (Russian)
 
 -- EDIT THIS TO YOUR LANGUAGE
---@includedir wordle/data/en/
+--@includedir wordle/data/ru/
 -- ^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- AND THIS
-local Language = "en"
+local Language = "ru"
 -- ^^^^^^^^^^^^^^^^^^
 -- THE SCRIPT WILL ERROR IF THEY ARE NOT THE SAME
 
@@ -60,14 +60,16 @@ local enKeyboard = {
 
 local Languages = {
     en = makeProfile(enAlphabet, enKeyboard, {
-        word_was     = "THE WORD WAS - %s",
+        word_was     = "THE WORD WAS",
+        so_close     = "SO CLOSE",
         play         = "PLAY",
-        chances      = "GET %d CHANCES TO GUESS",
-        letter_word  = "A %d LETTER WORD",
+        play_again   = "PLAY AGAIN",
+        chances      = "GET %d CHANCES",
+        letter_word  = "to guess a %d-letter word",
         is_playing   = "%s is playing",
-        won          = "YOU WON!",
-        lost         = "YOU LOST",
-        solved_in    = "Solved in %d/%d",
+        won          = "YOU WIN!",
+        lost         = "YOU LOSE",
+        solved_in    = "SOLVED IN %d / %d",
         win_messages = {
             "GENIUS!",
             "MAGNIFICENT",
@@ -85,14 +87,16 @@ local Languages = {
         { "A",     "S", "D", "F", "G", "H", "J", "K", "L",   "Ñ" },
         { "ENTER", "Z", "X", "C", "V", "B", "N", "M", "BKSP" }
     }, {
-        word_was     = "LA PALABRA ERA - %s",
+        word_was     = "LA PALABRA ERA",
+        so_close     = "TAN CERCA",
         play         = "JUGAR",
-        chances      = "CONSIGUE %d INTENTOS PARA ADIVINAR",
-        letter_word  = "UNA PALABRA DE %d LETRAS",
+        play_again   = "JUGAR DE NUEVO",
+        chances      = "CONSIGUE %d INTENTOS",
+        letter_word  = "para adivinar una palabra de %d letras",
         is_playing   = "%s está jugando",
-        won          = "¡GANASTE!",
-        lost         = "PERDISTE",
-        solved_in    = "Resuelto en %d/%d",
+        won          = "¡GANAS!",
+        lost         = "PIERDES",
+        solved_in    = "RESUELTO EN %d / %d",
         win_messages = {
             "¡GENIO!",
             "MAGNÍFICO",
@@ -107,14 +111,16 @@ local Languages = {
         { "Q",     "S", "D", "F", "G", "H", "J", "K",   "L", "M" },
         { "ENTER", "W", "X", "C", "V", "B", "N", "BKSP" }
     }, {
-        word_was     = "LE MOT ÉTAIT - %s",
+        word_was     = "LE MOT ÉTAIT",
+        so_close     = "SI PRÈS",
         play         = "JOUER",
-        chances      = "%d ESSAIS POUR DEVINER",
-        letter_word  = "UN MOT DE %d LETTRES",
+        play_again   = "REJOUER",
+        chances      = "OBTENEZ %d ESSAIS",
+        letter_word  = "pour deviner un mot de %d lettres",
         is_playing   = "%s joue",
-        won          = "VOUS AVEZ GAGNÉ !",
-        lost         = "VOUS AVEZ PERDU",
-        solved_in    = "Résolu en %d/%d",
+        won          = "VOUS GAGNEZ !",
+        lost         = "VOUS PERDEZ",
+        solved_in    = "RÉSOLU EN %d / %d",
         win_messages = {
             "GÉNIE !",
             "MAGNIFIQUE",
@@ -125,14 +131,16 @@ local Languages = {
         },
     }),
     it = makeProfile(enAlphabet, enKeyboard, {
-        word_was     = "LA PAROLA ERA - %s",
+        word_was     = "LA PAROLA ERA",
+        so_close     = "COSÌ VICINO",
         play         = "GIOCA",
-        chances      = "OTTIENI %d TENTATIVI PER INDOVINARE",
-        letter_word  = "UNA PAROLA DI %d LETTERE",
+        play_again   = "GIOCA DI NUOVO",
+        chances      = "OTTIENI %d TENTATIVI",
+        letter_word  = "per indovinare una parola di %d lettere",
         is_playing   = "%s sta giocando",
-        won          = "HAI VINTO!",
-        lost         = "HAI PERSO",
-        solved_in    = "Risolto in %d/%d",
+        won          = "VINCI!",
+        lost         = "PERDI",
+        solved_in    = "RISOLTO IN %d / %d",
         win_messages = {
             "GENIO!",
             "MAGNIFICO",
@@ -143,14 +151,16 @@ local Languages = {
         },
     }),
     nl = makeProfile(enAlphabet, enKeyboard, {
-        word_was     = "HET WOORD WAS - %s",
+        word_was     = "HET WOORD WAS",
+        so_close     = "ZO DICHTBIJ",
         play         = "SPELEN",
-        chances      = "KRIJG %d KANSEN OM TE RADEN",
-        letter_word  = "EEN WOORD VAN %d LETTERS",
+        play_again   = "OPNIEUW SPELEN",
+        chances      = "KRIJG %d KANSEN",
+        letter_word  = "om een woord van %d letters te raden",
         is_playing   = "%s speelt",
-        won          = "GEWONNEN!",
-        lost         = "VERLOREN",
-        solved_in    = "Opgelost in %d/%d",
+        won          = "JE WINT!",
+        lost         = "JE VERLIEST",
+        solved_in    = "OPGELOST IN %d / %d",
         win_messages = {
             "GENIAAL!",
             "SCHITTEREND",
@@ -161,14 +171,16 @@ local Languages = {
         },
     }),
     pt = makeProfile(enAlphabet, enKeyboard, {
-        word_was     = "A PALAVRA ERA - %s",
+        word_was     = "A PALAVRA ERA",
+        so_close     = "TÃO PERTO",
         play         = "JOGAR",
-        chances      = "%d TENTATIVAS PARA ADIVINHAR",
-        letter_word  = "UMA PALAVRA DE %d LETRAS",
+        play_again   = "JOGAR DE NOVO",
+        chances      = "OBTÉM %d TENTATIVAS",
+        letter_word  = "para adivinhar uma palavra de %d letras",
         is_playing   = "%s está a jogar",
-        won          = "GANHASTE!",
-        lost         = "PERDESTE",
-        solved_in    = "Resolvido em %d/%d",
+        won          = "GANHAS!",
+        lost         = "PERDES",
+        solved_in    = "RESOLVIDO EM %d / %d",
         win_messages = {
             "GÉNIO!",
             "MAGNÍFICO",
@@ -187,14 +199,16 @@ local Languages = {
         { "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э" },
         { "ENTER", "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", "BKSP" }
     }, {
-        word_was     = "ЗАГАДАННОЕ СЛОВО - %s",
+        word_was     = "ЗАГАДАННОЕ СЛОВО",
+        so_close     = "ТАК БЛИЗКО",
         play         = "ИГРАТЬ",
-        chances      = "%d ПОПЫТОК ДЛЯ УГАДЫВАНИЯ",
-        letter_word  = "СЛОВО ИЗ %d БУКВ",
+        play_again   = "ИГРАТЬ СНОВА",
+        chances      = "У ВАС %d ПОПЫТОК",
+        letter_word  = "чтобы угадать слово из %d букв",
         is_playing   = "%s играет",
-        won          = "ВЫ ВЫИГРАЛИ!",
-        lost         = "ВЫ ПРОИГРАЛИ",
-        solved_in    = "Решено за %d/%d",
+        won          = "ВЫ ВЫИГРЫВАЕТЕ!",
+        lost         = "ВЫ ПРОИГРЫВАЕТЕ",
+        solved_in    = "РЕШЕНО ЗА %d / %d",
         win_messages = {
             "ГЕНИАЛЬНО!",
             "ВЕЛИКОЛЕПНО",
@@ -246,13 +260,14 @@ local Layout = {
     subtitle = { anchor = "center", offsetY = -16 },
 
     -- main screen and result screen
-    playButton = { anchor = "center", offsetY = 240, w = 400, h = 130 },
+    playButton = { anchor = "center", offsetY = 240, w = 560, h = 94 },
 
     -- playing screen and result screen
     homeButton = { x = 64, y = 64, w = 64, h = 64 },
 
     -- result screen
-    resultText = { anchor = "center", offsetY = -384 },
+    resultText = { anchor = "center", offsetY = -256 },
+    endMessage = { anchor = "center", offsetY = -384 },
 
     -- playing screen
     grid = { anchor = "center" },
@@ -272,15 +287,17 @@ local Anchors = {
 local Fonts = SERVER and {} or {
     titleLarge = render.createFont("Roboto Mono", 256, 1000, true),
     title = render.createFont("Roboto Mono", 128, 1000, true),
-    titleMedium = render.createFont("Roboto Mono", 100, 1000, true),
+    titleMedium = render.createFont("Roboto Mono", 96, 1000, true),
     subtitle = render.createFont("Roboto Mono", 64, 1000, true),
+    subtitleLarge = render.createFont("Roboto Mono", 80, 1000, true),
     subtitleSmall = render.createFont("Roboto Mono", 48, 1000, true),
     subtitleMedium = render.createFont("Roboto Mono", 56, 1000, true),
+    subtitleLight = render.createFont("Roboto Mono", 48, 10, true),
     small = render.createFont("Roboto Mono", 32, 400, true)
 }
 
-local _green = Color(83, 141, 78)
-local _yellow = Color(181, 159, 59)
+local _green = Color(80, 160, 80)
+local _yellow = Color(212, 178, 50)
 local _grey = Color(60, 60, 60)
 local _lgrey = Color(132, 132, 132)
 local _trans = Color(255, 255, 255, 0)
@@ -292,6 +309,7 @@ local Colors = {
     lightGrey = _lgrey,
     red = Color(242, 60, 60),
     green = _green,
+    darkGreen = Color(50, 100, 50),
     yellow = _yellow,
     black = Color(0, 0, 0),
     transparent = Color(0, 0, 0, 0),

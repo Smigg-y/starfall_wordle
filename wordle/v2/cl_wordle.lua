@@ -7,12 +7,14 @@
 --@include wordle/v2/cl_logo.lua
 --@include wordle/v2/cl_grid.lua
 --@include wordle/v2/cl_keyboard.lua
+--@include wordle/v2/cl_background.lua
 
 local WordleUtil = require("wordle/v2/sh_wordle.lua")
 local WordleInput = require("wordle/v2/cl_input.lua")
 local WordleLogo = require("wordle/v2/cl_logo.lua")
 local WordleGrid = require("wordle/v2/cl_grid.lua")
 local WordleKeyboard = require("wordle/v2/cl_keyboard.lua")
+local WordleBackground = require("wordle/v2/cl_background.lua")
 
 local Config, States, Animations, NetNames, Colors, Fonts, Materials, Sounds =
     WordleUtil.Config,
@@ -54,6 +56,7 @@ function WordleUI:initialize()
 
     self.gameTransitionTime = 0.5 + Animations.bounceDuration + Animations.bounceDelay * (wordLength - 1)
     self.logoRT = WordleLogo()
+    self.bgRTs = WordleBackground()
 
     self.timers = {}
 end
@@ -182,11 +185,12 @@ function WordleUI:onGuessResult(feedback, state, answer)
     self.grid:applyFeedback(guess, feedback, isEnd, function()
         self.keyboard:applyFeedback(guess, feedback)
 
-        if state == States.won then
+        local didWin = state == States.won
+        if didWin then
             self.grid:bounceRow()
         end
 
-        self:schedule(self.gameTransitionTime, function()
+        self:schedule(didWin and self.gameTransitionTime or 0.5, function()
             if self.state == States.waiting then
                 return
             end
@@ -200,20 +204,24 @@ function WordleUI:onGuessResult(feedback, state, answer)
 
             local isLocalPlayer = player() == self.player
 
-            if state == States.won then
+            if didWin then
                 self.endMessage = l10n.win_messages[self.guesses]
                 self.solvedInText = l10n.solved_in:format(self.guesses, maxGuesses)
                 if isLocalPlayer then
                     Sounds.PlaySound(Sounds.win)
                 end
-            elseif state == States.lost then
-                self.endMessage = l10n.word_was:format(answer or "?")
+            elseif isEnd and not didWin then
+                self.endMessage = l10n.so_close
                 if isLocalPlayer then
                     Sounds.PlaySound(Sounds.lose)
                 end
             end
 
             if isEnd then
+                render.setFont(Fonts.subtitleLarge)
+                self.answerChars = WordleUtil.utf8chars(answer)
+                self.endMessageWidth, self.endMessageHeight = render.getTextSize(self.endMessage)
+                self.endMessageWidth = self.endMessageWidth + 64
                 self.inputManager:setOwner(nil)
                 self.inputManager:clearGroup("ui")
                 self.inputManager:register("ui", self.playButton)
@@ -268,18 +276,18 @@ function WordleUI:initializeInputs()
     self.inputManager:register("ui", self.playButton)
 end
 
-render.setFont(Fonts.titleMedium)
-local _, titleH = render.getTextSize("A")
+render.setFont(Fonts.subtitle)
+local _, playTxtH = render.getTextSize("A")
 
-local playTxt = l10n.play
-local function drawPlayButton(bounds, hovered)
-    render.setColor(hovered and Colors.lightGrey or Colors.white)
-    render.drawRoundedBox(64, bounds.x, bounds.y, bounds.w, bounds.h)
+local playTxt, playAgainTxt = l10n.play, l10n.play_again
+local function drawPlayButton(bounds, hovered, state)
+    render.setColor(hovered and Colors.darkGreen or Colors.green)
+    render.drawRoundedBox(48, bounds.x, bounds.y, bounds.w, bounds.h)
 
-    render.setColor(Colors.darkGrey)
-    render.setFont(Fonts.titleMedium)
-    render.drawText(bounds.x + bounds.w / 2, bounds.y + bounds.h / 2 - titleH / 2, playTxt,
-        TEXT_ALIGN.CENTER)
+    render.setColor(Colors.white)
+    render.setFont(Fonts.subtitle)
+    render.drawText(bounds.x + bounds.w / 2, bounds.y + bounds.h / 2 - playTxtH / 2,
+        (state == States.won or state == States.lost) and playAgainTxt or playTxt, TEXT_ALIGN.CENTER)
 end
 
 local function drawHomeButton(bounds, hovered)
@@ -298,18 +306,23 @@ local subtitleOne = l10n.chances:format(maxGuesses)
 local subtitleTwo = l10n.letter_word:format(wordLength)
 
 function WordleUI:drawHomeScreen()
-    local logoBounds = self.layout.wordleLogo
     render.setColor(Colors.white)
+    render.setRenderTargetTexture(self.bgRTs.waiting)
+    render.drawTexturedRect(0, 0, ScrW, ScrH)
+
+    local logoBounds = self.layout.wordleLogo
     render.setRenderTargetTexture(self.logoRT)
     render.drawTexturedRect(logoBounds.x, logoBounds.y, logoBounds.w, logoBounds.h)
 
     local subBounds = self.layout.subtitle
-    render.setFont(Fonts.subtitleMedium)
+    render.setFont(Fonts.subtitle)
     render.drawText(subBounds.x, subBounds.y - subtitleH / 2, subtitleOne, TEXT_ALIGN.CENTER)
+    render.setFont(Fonts.small)
+    render.setColor(Colors.lightGrey)
     render.drawText(subBounds.x, subBounds.y + subtitleH / 2, subtitleTwo, TEXT_ALIGN.CENTER)
 
     local playBounds, playHovered = self.layout.playButton, self.playButton.hovered
-    drawPlayButton(playBounds, playHovered)
+    drawPlayButton(playBounds, playHovered, self.state)
 end
 
 function WordleUI:drawPlayScreen(now)
@@ -318,6 +331,9 @@ function WordleUI:drawPlayScreen(now)
         return
     end
 
+    render.setColor(Colors.white)
+    render.setRenderTargetTexture(self.bgRTs.active)
+    render.drawTexturedRect(0, 0, ScrW, ScrH)
     local homeBounds, homeHovered = self.layout.homeButton, self.homeButton.hovered
     drawHomeButton(homeBounds, homeHovered)
 
@@ -325,33 +341,54 @@ function WordleUI:drawPlayScreen(now)
     self.grid:draw()
 
     local bounds = self.layout.activePlayer
-    render.setColor(Colors.white)
+    render.setColor(Colors.lightGrey)
     render.setFont(Fonts.small)
     render.drawText(bounds.x + 48, bounds.y - 16, self.curPlayerText, TEXT_ALIGN.LEFT)
 end
 
+local function drawResultTile(x, y, didWin, letter)
+    render.setColor(didWin and Colors.green or Colors.grey)
+    render.drawRect(x - 50, y - 50, 100, 100)
+
+    if letter then
+        render.setColor(Colors.white)
+        render.setFont(Fonts.subtitle)
+        render.drawSimpleText(x, y, letter, TEXT_ALIGN.CENTER, TEXT_ALIGN.CENTER)
+    end
+end
 function WordleUI:drawResultScreen()
+    render.setColor(Colors.white)
+    render.setRenderTargetTexture(self.bgRTs.result)
+    render.drawTexturedRect(0, 0, ScrW, ScrH)
     local playBounds, playHovered = self.layout.playButton, self.playButton.hovered
-    drawPlayButton(playBounds, playHovered)
+    drawPlayButton(playBounds, playHovered, self.state)
 
     local homeBounds, homeHovered = self.layout.homeButton, self.homeButton.hovered
     drawHomeButton(homeBounds, homeHovered)
 
     local didWin = self.state == States.won
-    local col = didWin and Colors.green or Colors.yellow
-    local resultText = didWin and l10n.won or l10n.lost
+    local endMsgBounds = self.layout.endMessage
+    render.setColor(didWin and Colors.green or Colors.grey)
+    render.drawRoundedBox(16, endMsgBounds.x - self.endMessageWidth / 2, endMsgBounds.y, self.endMessageWidth, 100)
+    render.setColor(Colors.white)
+    render.setFont(Fonts.subtitleLarge)
+    render.drawText(endMsgBounds.x, endMsgBounds.y + (100 - self.endMessageHeight) / 2,
+        self.endMessage, TEXT_ALIGN.CENTER)
 
     local bounds = self.layout.resultText
-    render.setColor(col)
-    render.setFont(Fonts.titleMedium)
-    render.drawText(bounds.x, bounds.y, resultText, TEXT_ALIGN.CENTER)
-
     render.setColor(Colors.white)
-    render.setFont(Fonts.subtitle)
-    render.drawText(bounds.x, bounds.y + 96, self.endMessage, TEXT_ALIGN.CENTER)
+    render.setFont(Fonts.titleMedium)
+    render.drawText(bounds.x, bounds.y, didWin and l10n.won or l10n.lost, TEXT_ALIGN.CENTER)
 
-    if didWin then
-        render.drawText(bounds.x, bounds.y + 256, self.solvedInText, TEXT_ALIGN.CENTER)
+    render.setFont(Fonts.subtitleLight)
+    render.setColor(Colors.lightGrey)
+    render.drawText(endMsgBounds.x, endMsgBounds.y + 250, didWin and self.solvedInText or l10n.word_was,
+        TEXT_ALIGN.CENTER)
+
+    for i = 1, wordLength do
+        local letter = self.answerChars[i]
+        drawResultTile(bounds.x - (wordLength * 100 + (wordLength - 1) * 12) / 2 + (i - 1) * (100 + 12) + 50,
+            bounds.y + 270, didWin, letter)
     end
 end
 
@@ -375,10 +412,10 @@ function WordleUI:render()
 
     if mainNeedsRedraw then
         render.selectRenderTarget("wordleui_rt")
-        render.clear()
+        render.clear(Colors.transparent)
 
         render.setColor(Colors.darkGrey)
-        render.drawRect(0, 0, ScrW, ScrH)
+        render.drawRoundedBox(32, 0, 0, ScrW, ScrH)
 
         if self.state == States.waiting then
             self:drawHomeScreen()
@@ -493,6 +530,7 @@ hook.add("Render", "wordleui_draw", function()
     local scr = render.getScreenEntity()
     local w, h = render.getResolution()
 
+    render.setBackgroundColor(Colors.transparent)
     if scr == mainScreen then
         ui.inputManager:update("ui")
         render.setRenderTargetTexture("wordleui_rt")
@@ -500,7 +538,6 @@ hook.add("Render", "wordleui_draw", function()
         if ui.state == States.active then
             ui.inputManager:update("keyboard")
         end
-        render.setBackgroundColor(Colors.transparent)
         render.setRenderTargetTexture("wordlekeyboard_rt")
     else
         return

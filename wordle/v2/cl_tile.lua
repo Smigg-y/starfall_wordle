@@ -179,7 +179,7 @@ function WordleTile:renderTile(state, xOffset)
 
     if outline then
         render.setColor(outline)
-        render.drawRectOutline(sx, self.y, self.w, self.h, 2)
+        render.drawRectOutline(sx, self.y, self.w, self.h, 3)
     end
 
     if self.letter ~= "" then
