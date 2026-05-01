@@ -469,9 +469,11 @@ net.receive(NetNames.Error, function()
     print(WordleUtil.ErrorMessages[errCode])
 
     if errCode == WordleUtil.ErrorCodes.invalidGuess then
-        ui.grid.locked = false
         ui.grid:shakeRow()
-        Sounds.PlaySound(Sounds.invalid)
+        if player() == ui.player then
+            ui.grid.locked = false
+            Sounds.PlaySound(Sounds.invalid)
+        end
     end
 end)
 
