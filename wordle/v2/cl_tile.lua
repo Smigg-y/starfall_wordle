@@ -107,7 +107,9 @@ function WordleTile:update(now)
         else
             if not self.flipSoundFired then
                 self.flipSoundFired = true
-                Sounds.PlaySound(Sounds.tileFlip, 90 + self.flipCol * 4)
+                if self.grid.player == player() then
+                    Sounds.PlaySound(Sounds.tileFlip, 90 + self.flipCol * 4)
+                end
             end
             local t = (now - self.flipStart) * invFlipDuration
             if t >= 1 then
@@ -146,7 +148,9 @@ function WordleTile:update(now)
         else
             if not self.bounceSoundFired then
                 self.bounceSoundFired = true
-                Sounds.PlaySound(Sounds.rowWin, 90 + self.bounceCol * 4)
+                if self.grid.player == player() then
+                    Sounds.PlaySound(Sounds.rowWin, 90 + self.bounceCol * 4)
+                end
             end
             local bt = (now - self.bounceStart) * invBounceDuration
             if bt >= 1 then
