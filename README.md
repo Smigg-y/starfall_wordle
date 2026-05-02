@@ -1,4 +1,4 @@
-![Wordle](https://github.com/Smigg-y/starfall_wordle/tree/ease-of-use/assets/wordle_combined.jpg "Wordle")
+![Wordle](https://github.com/Smigg-y/starfall_wordle/blob/ease-of-use/assets/wordle_combined.jpg "Wordle")
 # Wordle
 
 A Starfall implementation of Wordle for Garry's Mod.
