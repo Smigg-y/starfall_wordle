@@ -66,7 +66,7 @@ Don't want to download every file manually? Drop this single script into Starfal
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/sv_wordle.lua as sv_wordle.lua
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/v2/cl_wordle.lua as cl_wordle.lua
 
--- 👉 Full list: https://github.com/Smigg-y/starfall_wordle/tree/main#supported-languages
+-- 👉 Full list: https://github.com/Smigg-y/starfall_wordle/tree/main#-supported-languages
 
 -- EDIT the 'en' in BOTH includes below to change the language.                                         👇
 --@include https://raw.githubusercontent.com/Smigg-y/starfall_wordle/refs/heads/ease-of-use/wordle/data/en/choices.lua as answers.lua
